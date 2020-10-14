@@ -1,14 +1,15 @@
-name: Deploy ASP.NET Core Web Application to WebAppDotNet5
+name: Deploy ASP.NET Core Web Application to WebApplication2220201014091850
 on:
   push:
     branches:
     - master
 env:
-  AZURE_WEBAPP_NAME: WebAppDotNet5
+  AZURE_WEBAPP_NAME: WebApplication2220201014091850
   AZURE_WEBAPP_PACKAGE_PATH: ./published
-  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.WEBAPPDOTNET5_PUBLISH_PROFILE }}
+  AZURE_WEBAPP_PUBLISH_PROFILE: ${{ secrets.WEBAPPLICATION2220201014091850_PUBLISH_PROFILE }}
   CONFIGURATION: Release
-  DOTNET_CORE_VERSION: 5.0.100-rc.1.20452.10
+  DOTNET_CORE_VERSION: 5.0.100-rc.2.20479.15
+  PROJECT_PATH: WebApplicationDN5
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -19,13 +20,13 @@ jobs:
       with:
         dotnet-version: ${{ env.DOTNET_CORE_VERSION }}
     - name: Restore packages
-      run: dotnet restore
+      run: dotnet restore "${{ env.PROJECT_PATH }}"
     - name: Build app
-      run: dotnet build --configuration ${{ env.CONFIGURATION }} --no-restore
+      run: dotnet build "${{ env.PROJECT_PATH }}" --configuration ${{ env.CONFIGURATION }} --no-restore
     - name: Test app
-      run: dotnet test --no-build
+      run: dotnet test "${{ env.PROJECT_PATH }}" --no-build
     - name: Publish app for deploy
-      run: dotnet publish --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
+      run: dotnet publish "${{ env.PROJECT_PATH }}" --configuration ${{ env.CONFIGURATION }} --no-build --output "${{ env.AZURE_WEBAPP_PACKAGE_PATH }}"
     - name: Deploy to Azure WebApp
       uses: azure/webapps-deploy@v2
       with:
